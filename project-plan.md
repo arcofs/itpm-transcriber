@@ -1,3 +1,29 @@
+### Project Overview: YouTube Transcript Insights to Obsidian Notes
+
+**Project Title:** YouTube Transcript Insights Extraction and Integration with Obsidian Notes
+
+**Description:** This project involves the development of a Python-based application that automates the extraction of transcripts from YouTube videos, processes the content using a Large Language Model (LLM) to generate insightful summaries, and then integrates these summaries directly into an Obsidian notes database hosted locally.
+
+**Key Features:**
+
+1. **YouTube Video Processing:**
+    
+    - The application fetches a list of videos from a specified YouTube channel using the YouTube Data API.
+    - For each video, it extracts the transcript using the `youtube-transcript-api`.
+2. **LLM-Powered Insights:**
+    
+    - The extracted transcripts are sent to an LLM (such as GPT-4) to generate insights. These insights may include key topics, summaries, sentiment analysis, and actionable points.
+    - The application ensures that the LLM interactions are robust, handling potential errors like rate limits, timeouts, and invalid input formats.
+3. **Markdown Integration with Obsidian:**
+    
+    - The generated insights are formatted as Markdown files.
+    - These Markdown files are automatically saved or updated within a specified Obsidian vault, making them easily accessible for further note-taking and knowledge management.
+4. **Command-Line Interface (CLI):**
+    
+    - Users can interact with the application via a simple CLI, where they can input a YouTube channel ID or video URL and receive the generated insights in their Obsidian notes database.
+    - The CLI also offers options for customizing output, such as selecting specific videos or setting the output file location.
+
+
 # Sprint 1: Environment Setup and API Integration (Week 1)
 
 ## Goal: Set up the development environment and integrate with necessary APIs.
