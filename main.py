@@ -6,6 +6,9 @@ from youtube_transcript_api import YouTubeTranscriptApi
 import anthropic
 import couchdb
 from urllib.parse import quote
+import socket
+from datetime import datetime
+import uuid
 
 # Constants
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
@@ -16,7 +19,7 @@ TRANSCRIBED_VIDEOS_FILE = 'transcribed_videos.json'
 COUCHDB_URL = os.getenv('COUCHDB_URL')
 COUCHDB_USERNAME = os.getenv('COUCHDB_USERNAME')
 COUCHDB_PASSWORD = os.getenv('COUCHDB_PASSWORD')
-COUCHDB_DATABASE = 'obsidian'  # The name of your Obsidian database in CouchDB
+COUCHDB_DATABASE = 'obsidiandb'
 
 if not COUCHDB_URL or not COUCHDB_USERNAME or not COUCHDB_PASSWORD:
     print("Error: CouchDB environment variables are not set.")
@@ -130,33 +133,78 @@ def connect_to_couchdb():
     """
     Connect to the CouchDB server and return the database object.
     """
+    full_url = f"https://{COUCHDB_USERNAME}:****@{COUCHDB_URL}"
+    print(f"Attempting to connect to CouchDB at: {full_url}")
+    
     try:
         server = couchdb.Server(f"https://{quote(COUCHDB_USERNAME)}:{quote(COUCHDB_PASSWORD)}@{COUCHDB_URL}")
         db = server[COUCHDB_DATABASE]
         return db
+    except couchdb.http.Unauthorized:
+        print("Error: Unauthorized access to CouchDB. Please check your username and password.")
+    except couchdb.http.ResourceNotFound:
+        print(f"Error: Database '{COUCHDB_DATABASE}' not found on the CouchDB server.")
+    except socket.gaierror as e:
+        print(f"Error: Unable to resolve CouchDB URL. Please check your internet connection and the COUCHDB_URL.")
+        print(f"Detailed error: {e}")
+    except requests.exceptions.ConnectionError:
+        print("Error: Unable to connect to CouchDB. Please check if the server is running and accessible.")
     except Exception as e:
-        print(f"Error connecting to CouchDB: {e}")
-        sys.exit(1)
+        print(f"Unexpected error connecting to CouchDB: {e}")
+    
+    sys.exit(1)
 
 def save_insights(video_title, insights):
     """
-    Save the generated insights to CouchDB as a Markdown document.
+    Save the generated insights to CouchDB in a format compatible with Obsidian.
     """
     db = connect_to_couchdb()
-    doc_id = f"{video_title.replace('/', '_')}_insights"
+    file_name = f"{video_title.replace('/', '_').replace(' ', '_').lower()}.md"
+    doc_id = f"Video Summaries/{file_name}"
+    child_id = f"h:{uuid.uuid4().hex[:12]}"
     
-    # Create a new document or update an existing one
+    current_time = int(datetime.utcnow().timestamp() * 1000)  # milliseconds since epoch
+    
     try:
-        doc = db.get(doc_id, {})
-        doc.update({
-            'title': video_title,
-            'content': insights,
-            'type': 'markdown'
+        # Create or update the parent document
+        parent_doc = db.get(doc_id, {})
+        parent_doc.update({
+            "_id": doc_id,
+            "children": [child_id],
+            "path": f"Video Summaries/{file_name}",
+            "ctime": parent_doc.get("ctime", current_time),
+            "mtime": current_time,
+            "size": len(insights),
+            "type": "markdown",
+            "eden": {}
         })
-        db.save(doc)
+        db.save(parent_doc)
+        
+        # Create or update the child document
+        child_doc = {
+            "_id": child_id,
+            "data": insights,
+            "type": "leaf"
+        }
+        db.save(child_doc)
+        
         print(f"Insights saved to CouchDB with ID: {doc_id}")
+        return True
+    except couchdb.http.ResourceConflict:
+        print(f"Document with ID {doc_id} already exists. Updating...")
+        existing_parent = db[doc_id]
+        existing_parent.update(parent_doc)
+        db.save(existing_parent)
+        
+        existing_child = db[child_id]
+        existing_child.update(child_doc)
+        db.save(existing_child)
+        
+        print(f"Updated document with ID: {doc_id}")
+        return True
     except Exception as e:
         print(f"Error saving insights to CouchDB: {e}")
+        return False
 
 # Load existing transcribed videos
 def load_transcribed_videos():
@@ -181,12 +229,15 @@ def save_transcribed_video(video_id):
 
 if __name__ == "__main__":
     channel_id = "UCcgaoWXUKFl-P3rdNXCuWjg"
-    video_metadata = get_video_metadata(channel_id, max_results=5)
+    video_metadata = get_video_metadata(channel_id, max_results=10)
     
     transcribed_videos = load_transcribed_videos()  # Load existing transcribed videos
 
-    # Connect to CouchDB
-    db = connect_to_couchdb()
+    try:
+        db = connect_to_couchdb()
+    except SystemExit:
+        print("Exiting due to CouchDB connection error.")
+        sys.exit(1)
 
     for item in video_metadata.get('items', []):
         video_id = item['id']['videoId']
