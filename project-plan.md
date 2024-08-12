@@ -12,7 +12,7 @@
     - For each video, it extracts the transcript using the `youtube-transcript-api`.
 2. **LLM-Powered Insights:**
     
-    - The extracted transcripts are sent to an LLM (such as GPT-4) to generate insights. These insights may include key topics, summaries, sentiment analysis, and actionable points.
+    - The extracted transcripts are sent to an LLM (such as Anthropic Claude ) to generate insights. These insights may include key topics, summaries, sentiment analysis, and actionable points.
     - The application ensures that the LLM interactions are robust, handling potential errors like rate limits, timeouts, and invalid input formats.
 3. **Markdown Integration with Obsidian:**
     
@@ -40,7 +40,7 @@
 
 - Install required libraries: youtube-transcript-api, requests, pandas, openai or transformers, etc.
 
-- Set up API keys for YouTube Data API and LLM API (e.g., OpenAI).
+- Set up API keys for YouTube Data API and LLM API (e.g., Anthropic Claude ).
 
 **YouTube Data API Integration (Day 3-5)**
 
@@ -49,6 +49,8 @@
 - Implement a function to retrieve video metadata from a specific channel.
 
 - Validate API responses and handle errors such as rate limits and invalid channel IDs.
+
+- This needs to be able to search for videos that match a given text on a specific channel
 
 **Basic Transcript Extraction (Day 6-7)**
 
@@ -64,8 +66,6 @@
 
 - Error handling for API responses.
 
-- Documentation on environment setup and API integration.
-
   
 
 # Sprint 2: LLM Integration and Insight Extraction (Week 2)
@@ -78,7 +78,7 @@
 
 **LLM Integration (Day 1-3)**
 
-- Implement a function to send transcripts to the LLM (e.g., GPT-4) for analysis.
+- Implement a function to send transcripts to the LLM (e.g., Anthropic Claude) for analysis.
 
 - Handle API errors, such as rate limits, timeouts, and invalid input formats.
 
