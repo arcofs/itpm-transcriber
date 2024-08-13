@@ -13,6 +13,7 @@ load_dotenv()
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
 TRANSCRIBED_VIDEOS_FILE = 'transcribed_videos.json'
+TARGET_DIRECTORY = os.getenv('TARGET_DIRECTORY', '/home/tom/Apps/mainvault')
 
 if not YOUTUBE_API_KEY:
     print("Error: YOUTUBE_API_KEY environment variable is not set.")
@@ -125,7 +126,7 @@ def save_insights(video_title, insights):
     # Path to the target directory
     target_directory = '/home/tom/Apps/mainvault'
     file_name = f"{video_title.replace('/', '_').replace(' ', '_').lower()}.md"
-    file_path = os.path.join(target_directory, file_name)
+    file_path = os.path.join(TARGET_DIRECTORY, file_name)
 
     try:
         with open(file_path, 'w', encoding='utf-8') as f:
@@ -161,7 +162,7 @@ if __name__ == "__main__":
     channel_id = "UCcgaoWXUKFl-P3rdNXCuWjg"
     video_metadata = get_video_metadata(channel_id, max_results=3)
     
-    transcribed_videos = load_transcribed_videos()  # Load existing transcribed videos
+    transcribed_videos = load_transcribed_videos()
 
     for item in video_metadata.get('items', []):
         video_id = item['id']['videoId']
@@ -169,7 +170,7 @@ if __name__ == "__main__":
         
         if video_id in transcribed_videos:
             print(f"Video already transcribed: {video_title}")
-            continue  # Skip already transcribed videos
+            continue
 
         if is_itpm_flash_video(video_title):
             print(f"Processing ITPM Flash video: {video_title}")
@@ -181,7 +182,7 @@ if __name__ == "__main__":
                 insights = generate_insights(processed_transcript)
                 if insights:
                     save_insights(video_title, insights)
-                    save_transcribed_video(video_id)  # Save the video ID after processing
+                    save_transcribed_video(video_id)
                 
                 print(f"Successfully processed: {video_title}")
             except Exception as e:
