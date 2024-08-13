@@ -3,4 +3,4 @@ requests
 pandas
 openai
 anthropic
-couchdb
+python-dotenv
