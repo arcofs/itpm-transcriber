@@ -44,7 +44,7 @@ This project retrieves the latest video metadata from a specified YouTube channe
    ```
 
 2. **Output:**
-   - The insights will be saved in a Markdown file in the specified directory (`/home/tom/Apps/mainvault`).
+   - The insights will be saved in a Markdown file in the specified directory (`TARGET_DIRECTORY`).
    - The filename will be based on the video title, formatted to be URL-friendly.
 
 ## License
