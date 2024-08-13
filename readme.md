@@ -1,6 +1,6 @@
 # YouTube Transcript Insights Generator
 
-This project retrieves the latest video metadata from a specified YouTube channel (Currently ITPM), extracts transcripts from selected videos, and generates insights using the Anthropic Claude API. The insights are then saved in Markdown format for easy access and readability. Currently its setup to get the latest videos from the ITPM youtube channel, transcribe only the Falash videos and parse them through a LLM to summarise and gainm insights
+This project retrieves the latest video metadata from a specified YouTube channel (Currently ITPM), extracts transcripts from selected videos, and generates insights using the Anthropic Claude API. The insights are then saved in Markdown format for easy access and readability. Currently its setup to get the latest videos from the ITPM youtube channel, transcribe only the Flash videos and parse them through a LLM to summarise and gainm insights
 
 ## Features
 

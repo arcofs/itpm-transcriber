@@ -76,10 +76,11 @@ def process_transcript(transcript):
     """
     return ' '.join([entry['text'] for entry in transcript if entry['text'] not in ['[Music]', '[Applause]']])
 
-def generate_insights(transcript):
+def generate_insights(transcript, video_id):
     """
     Send processed transcript to Anthropic Claude for analysis and extract insights.
     """
+    video_url = f"https://www.youtube.com/watch?v={video_id}"
     prompt = f"""
 \n\nHuman: 
     You will be provided with a text transcript of discussions from financial industry professionals. 
@@ -119,18 +120,20 @@ def generate_insights(transcript):
         print(f"Error generating insights: {e}")
         return None
 
-def save_insights(video_title, insights):
+def save_insights(video_title, insights, video_id):
     """
     Save the generated insights to a markdown file in the specified directory.
     """
-    # Path to the target directory
-    target_directory = '/home/tom/Apps/mainvault'
     file_name = f"{video_title.replace('/', '_').replace(' ', '_').lower()}.md"
     file_path = os.path.join(TARGET_DIRECTORY, file_name)
 
+    # Include video URL in insights under the heading
+    video_url = f"https://www.youtube.com/watch?v={video_id}"
+    insights_with_url = f"# Insights for {video_title}\n\n[Watch Video]({video_url})\n\n{insights}"
+    
     try:
         with open(file_path, 'w', encoding='utf-8') as f:
-            f.write(insights)
+            f.write(insights_with_url)
         print(f"Insights saved to {file_path}")
         return True
     except Exception as e:
@@ -181,7 +184,7 @@ if __name__ == "__main__":
                 # Generate and save insights
                 insights = generate_insights(processed_transcript)
                 if insights:
-                    save_insights(video_title, insights)
+                    save_insights(video_title, insights, video_id)
                     save_transcribed_video(video_id)
                 
                 print(f"Successfully processed: {video_title}")
