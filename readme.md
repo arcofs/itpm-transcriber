@@ -9,14 +9,6 @@ This project retrieves the latest video metadata from a specified YouTube channe
 - Analyzes transcripts to generate actionable insights.
 - Saves insights in a Markdown file.
 
-## Requirements
-
-- Python 3.x
-- `requests` library
-- `youtube-transcript-api` library
-- `anthropic` library
-- `python-dotenv` library
-
 ## Setup
 
 1. **Clone the repository:**
@@ -30,10 +22,11 @@ This project retrieves the latest video metadata from a specified YouTube channe
    pip install -r requirements.txt
    ```
 
-3. **Create a `.env` file in the root directory and add your API keys:**
+3. **Create a `.env` file in the root directory and add your API keys and the target directory where the .md file will be saved:**
    ```plaintext
    YOUTUBE_API_KEY=your_youtube_api_key
    ANTHROPIC_API_KEY=your_anthropic_api_key
+   TARGET_DIRECTORY=/path/to/your/directory
    ```
 
 ## Usage
