@@ -13,7 +13,7 @@ load_dotenv()
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
 TRANSCRIBED_VIDEOS_FILE = 'transcribed_videos.json'
-TARGET_DIRECTORY = os.getenv('TARGET_DIRECTORY', '/home/tom/Apps/mainvault')
+TARGET_DIRECTORY = os.getenv('TARGET_DIRECTORY', './insights')
 
 if not YOUTUBE_API_KEY:
     print("Error: YOUTUBE_API_KEY environment variable is not set.")
@@ -182,7 +182,7 @@ if __name__ == "__main__":
                 processed_transcript = process_transcript(transcript)
                 
                 # Generate and save insights
-                insights = generate_insights(processed_transcript)
+                insights = generate_insights(processed_transcript, video_id)
                 if insights:
                     save_insights(video_title, insights, video_id)
                     save_transcribed_video(video_id)
