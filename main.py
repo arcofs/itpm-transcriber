@@ -94,8 +94,8 @@ def generate_insights(transcript, video_id):
     guide investment decisions.
     - Sentiment Analysis: Perform a brief sentiment analysis of the content, noting whether the professionals 
     are optimistic, pessimistic, or neutral.
-    - Research Recommendations: Advise the reader on where they should gather further information about the 
-    mentioned stocks, commodities, or market trends. Prioritize sources that would provide a competitive edge 
+    - Trade Ideas: Advise the reader on where they should gather further information about the 
+    mentioned stocks, commodities, or market trends for new trade ideas. Prioritize sources that would provide a competitive edge 
     in making profitable investment decisions.
     Ensure that the analysis is focused on practical investment opportunities, as the end goal is to help 
     the reader make informed decisions to maximize their financial returns.
